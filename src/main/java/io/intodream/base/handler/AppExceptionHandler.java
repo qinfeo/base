@@ -7,6 +7,7 @@ import io.intodream.base.exception.DaoException;
 import io.intodream.base.exception.ServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.NoHandlerFoundException;
@@ -33,6 +34,13 @@ public class AppExceptionHandler {
             return new ResultDTO(ResultEnums.RESOURCE_NOT_EXIST);
         }
         return new ResultDTO(ResultEnums.UNKNOWN_ERROR);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResultDTO messageNotReadable(HttpServletRequest request, HttpMessageNotReadableException e) {
+        logger.info("请求路径:{}->{}", request.getMethod(), request.getServletPath());
+        logger.error("异常信息", e);
+        return new ResultDTO(ResultEnums.PARAM_ERROR);
     }
 
     /**
